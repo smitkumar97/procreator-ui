@@ -33,6 +33,19 @@ export class ApplicationFormComponent {
     this.initializeForm();
   }
 
+  ngOnInit(): void {
+    this.userForm.get('state')?.valueChanges.subscribe(state => {
+      const cityControl = this.userForm.get('city');
+      if (state) {
+        cityControl?.enable();
+        cityControl?.setValue('');
+      } else {
+        cityControl?.disable();
+        cityControl?.setValue('');
+      }
+    });
+  }
+
   initializeForm(): void {
     this.userForm = this.fb.group({
       users: this.fb.array([this.createUserFormGroup()])
