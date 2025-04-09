@@ -1,0 +1,104 @@
+<div class="form-container">
+  <h2>User Registration Form</h2>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div formArrayName="users">
+      <div *ngFor="let user of users.controls; let i = index" [formGroupName]="i" class="user-card">
+        <h3>User {{i + 1}}</h3>
+        <button *ngIf="users.length > 1" type="button" class="remove-btn" (click)="removeUser(i)">×</button>
+
+        <div class="form-group">
+          <label for="name{{i}}">Full Name</label>
+          <input type="text" id="name{{i}}" formControlName="name" placeholder="Enter full name">
+          <div *ngIf="users.at(i).get('name')?.touched && users.at(i).get('name')?.errors" class="error-message">
+            <div *ngIf="users.at(i).get('name')?.errors?.['required']">Name is required</div>
+            <div *ngIf="users.at(i).get('name')?.errors?.['minlength']">Name must be at least 3 characters</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Gender</label>
+          <div class="radio-group">
+            <label>
+              <input type="radio" formControlName="gender" value="male"> Male
+            </label>
+            <label>
+              <input type="radio" formControlName="gender" value="female"> Female
+            </label>
+            <label>
+              <input type="radio" formControlName="gender" value="other"> Other
+            </label>
+          </div>
+          <div *ngIf="users.at(i).get('gender')?.touched && users.at(i).get('gender')?.errors" class="error-message">
+            Gender is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="dob{{i}}">Date of Birth</label>
+          <input type="date" id="dob{{i}}" formControlName="dob">
+          <div *ngIf="users.at(i).get('dob')?.touched && users.at(i).get('dob')?.errors" class="error-message">
+            <div *ngIf="users.at(i).get('dob')?.errors?.['required']">Date of Birth is required</div>
+            <div *ngIf="users.at(i).get('dob')?.errors?.['futureDate']">Date cannot be in the future</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="address{{i}}">Address</label>
+          <textarea id="address{{i}}" formControlName="address" placeholder="Enter full address"></textarea>
+          <div *ngIf="users.at(i).get('address')?.touched && users.at(i).get('address')?.errors" class="error-message">
+            <div *ngIf="users.at(i).get('address')?.errors?.['required']">Address is required</div>
+            <div *ngIf="users.at(i).get('address')?.errors?.['minlength']">Address must be at least 10 characters</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="mobile{{i}}">Mobile Number</label>
+          <input type="tel" id="mobile{{i}}" formControlName="mobile" placeholder="Enter 10-digit mobile number">
+          <div *ngIf="users.at(i).get('mobile')?.touched && users.at(i).get('mobile')?.errors" class="error-message">
+            <div *ngIf="users.at(i).get('mobile')?.errors?.['required']">Mobile number is required</div>
+            <div *ngIf="users.at(i).get('mobile')?.errors?.['pattern']">Please enter a valid 10-digit number</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="state{{i}}">State</label>
+            <select id="state{{i}}" formControlName="state" (change)="onStateChange(i)">
+              <option value="">Select State</option>
+              <option *ngFor="let state of states" [value]="state">{{state}}</option>
+            </select>
+            <div *ngIf="users.at(i).get('state')?.touched && users.at(i).get('state')?.errors" class="error-message">
+              State is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="city{{i}}">City</label>
+            <select id="city{{i}}" formControlName="city" [disabled]="!users.at(i).get('state')?.value">
+              <option value="">Select City</option>
+              <option *ngFor="let city of cities[users.at(i).get('state')?.value] || []" [value]="city">{{city}}</option>
+            </select>
+            <div *ngIf="users.at(i).get('city')?.touched && users.at(i).get('city')?.errors" class="error-message">
+              City is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="pincode{{i}}">Pincode</label>
+            <input type="text" id="pincode{{i}}" formControlName="pincode" placeholder="6-digit pincode">
+            <div *ngIf="users.at(i).get('pincode')?.touched && users.at(i).get('pincode')?.errors" class="error-message">
+              <div *ngIf="users.at(i).get('pincode')?.errors?.['required']">Pincode is required</div>
+              <div *ngIf="users.at(i).get('pincode')?.errors?.['pattern']">Pincode must be 6 digits</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn add-btn" (click)="addUser()">Add Another User</button>
+      <button type="button" class="btn clear-btn" (click)="clearForm()">Clear Form</button>
+      <button type="submit" class="btn submit-btn">Submit</button>
+    </div>
+  </form>
+</div>
